@@ -1,253 +1,174 @@
 # X-hunt Deployment Guide
 
-This guide covers deploying the X-hunt application to production environments.
+## Quick Deploy to Vercel (Recommended)
 
-## Prerequisites
+1. **Fork/Clone the repository**
+   \`\`\`bash
+   git clone https://github.com/your-username/x-hunt.git
+   cd x-hunt
+   \`\`\`
 
-- Node.js 18+ 
-- PostgreSQL 15+
-- Redis (optional, for caching)
-- Docker & Docker Compose (for containerized deployment)
-- SSL certificates (for HTTPS)
+2. **Install dependencies**
+   \`\`\`bash
+   npm install
+   \`\`\`
+
+3. **Set up environment variables**
+   \`\`\`bash
+   cp .env.example .env.local
+   # Edit .env.local with your values
+   \`\`\`
+
+4. **Deploy to Vercel**
+   \`\`\`bash
+   npm run deploy
+   \`\`\`
 
 ## Environment Setup
 
-### 1. Environment Variables
+### Required Environment Variables
+- `NEXT_PUBLIC_APP_URL`: Your domain URL
+- `NEXT_PUBLIC_APP_NAME`: Application name
+- `NEXTAUTH_SECRET`: Authentication secret (32+ characters)
 
-Copy `.env.example` to `.env` and configure:
+### Optional Environment Variables
+- `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID`: Google Analytics tracking ID
+- `SENTRY_DSN`: Error monitoring with Sentry
+- `STRIPE_PUBLISHABLE_KEY`: Payment processing
+- `OPENAI_API_KEY`: AI features integration
 
+## Production Checklist
+
+### Pre-deployment
+- [ ] Update environment variables in `.env.local`
+- [ ] Run `npm run type-check` to verify TypeScript
+- [ ] Run `npm run lint` to check code quality
+- [ ] Test build locally with `npm run build`
+- [ ] Update `NEXT_PUBLIC_APP_URL` in environment variables
+
+### Security
+- [ ] Enable HTTPS/SSL certificate
+- [ ] Configure CSP headers (already in next.config.mjs)
+- [ ] Set up rate limiting for API routes
+- [ ] Review and update CORS settings
+- [ ] Enable security headers (already configured)
+
+### Performance
+- [ ] Enable image optimization (configured)
+- [ ] Set up CDN for static assets
+- [ ] Configure caching strategies
+- [ ] Enable compression (configured)
+- [ ] Monitor Core Web Vitals
+
+### Monitoring
+- [ ] Set up error tracking (Sentry recommended)
+- [ ] Configure analytics (Google Analytics/Vercel Analytics)
+- [ ] Set up uptime monitoring
+- [ ] Configure log aggregation
+- [ ] Set up performance monitoring
+
+## Docker Deployment
+
+### Build and run locally
 \`\`\`bash
-cp .env.example .env
+npm run docker:build
+npm run docker:run
 \`\`\`
 
-**Required Variables:**
-- `DATABASE_URL`: PostgreSQL connection string
-- `NEXTAUTH_SECRET`: Random 32-character string
-- `NEXTAUTH_URL`: Your domain URL
-- `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET`: OAuth credentials
-- `STRIPE_SECRET_KEY` & `STRIPE_PUBLISHABLE_KEY`: Payment processing
-
-### 2. Database Setup
-
+### Using Docker Compose
 \`\`\`bash
-# Install dependencies
-npm install
-
-# Generate Prisma client
-npx prisma generate
-
-# Run database migrations
-npx prisma db push
-
-# Seed initial data (optional)
-npx prisma db seed
+npm run docker:compose
 \`\`\`
 
-## Deployment Options
+## Manual Server Deployment
 
-### Option 1: Docker Compose (Recommended)
+### Prerequisites
+- Node.js 18+ 
+- PM2 for process management
+- Nginx for reverse proxy
+- SSL certificate
 
-1. **Configure environment:**
-   \`\`\`bash
-   # Create production environment file
-   cp .env.example .env.production
-   # Edit .env.production with production values
-   \`\`\`
-
-2. **Build and start services:**
-   \`\`\`bash
-   docker-compose up -d
-   \`\`\`
-
-3. **Run database migrations:**
-   \`\`\`bash
-   docker-compose exec app npx prisma db push
-   \`\`\`
-
-### Option 2: Manual Deployment
-
-1. **Build the application:**
+### Steps
+1. **Build the application**
    \`\`\`bash
    npm run build
    \`\`\`
 
-2. **Start the production server:**
+2. **Start with PM2**
    \`\`\`bash
-   npm start
+   pm2 start npm --name "x-hunt" -- start
    \`\`\`
 
-### Option 3: Vercel Deployment
-
-1. **Install Vercel CLI:**
-   \`\`\`bash
-   npm i -g vercel
+3. **Configure Nginx**
+   ```nginx
+   server {
+       listen 80;
+       server_name your-domain.com;
+       
+       location / {
+           proxy_pass http://localhost:3000;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection 'upgrade';
+           proxy_set_header Host $host;
+           proxy_cache_bypass $http_upgrade;
+       }
+   }
    \`\`\`
 
-2. **Deploy:**
+## Database Setup (Optional)
+
+If using a real database instead of mock data:
+
+1. **PostgreSQL Setup**
    \`\`\`bash
-   vercel --prod
+   # Create database
+   createdb xhunt
+   
+   # Run migrations
+   npm run db:migrate
+   
+   # Seed data
+   npm run db:seed
    \`\`\`
 
-3. **Configure environment variables in Vercel dashboard**
+2. **Environment Variables**
+   \`\`\`env
+   DATABASE_URL=postgresql://user:password@localhost:5432/xhunt
+   \`\`\`
 
-## Database Configuration
+## Monitoring and Maintenance
 
-### PostgreSQL Setup
+### Health Checks
+- Health endpoint: `/api/health`
+- Monitoring script: `npm run health-check`
 
-\`\`\`sql
--- Create database and user
-CREATE DATABASE xhunt_db;
-CREATE USER xhunt_user WITH PASSWORD 'secure_password';
-GRANT ALL PRIVILEGES ON DATABASE xhunt_db TO xhunt_user;
-\`\`\`
+### Logs
+- Application logs: Check Vercel dashboard or server logs
+- Error tracking: Sentry integration available
 
-### Connection Pooling (Recommended)
-
-For production, use connection pooling:
-
+### Updates
 \`\`\`bash
-# Using PgBouncer
-DATABASE_URL="postgresql://xhunt_user:password@pgbouncer:5432/xhunt_db"
+# Pull latest changes
+git pull origin main
+
+# Install dependencies
+npm install
+
+# Build and deploy
+npm run build
+npm run deploy
 \`\`\`
-
-## Security Considerations
-
-### 1. Environment Variables
-- Never commit `.env` files
-- Use strong, unique secrets
-- Rotate secrets regularly
-
-### 2. Database Security
-- Use SSL connections
-- Implement proper user permissions
-- Regular backups
-
-### 3. Application Security
-- Enable HTTPS
-- Configure CORS properly
-- Implement rate limiting
-- Use security headers
-
-## Monitoring & Health Checks
-
-### Health Check Endpoint
-\`\`\`
-GET /api/health
-\`\`\`
-
-Returns application health status including:
-- Database connectivity
-- Environment configuration
-- Memory usage
-- Response times
-
-### Monitoring Setup
-
-1. **Application Monitoring:**
-   - Use tools like Sentry for error tracking
-   - Implement logging with structured logs
-
-2. **Infrastructure Monitoring:**
-   - Monitor CPU, memory, disk usage
-   - Database performance metrics
-   - Response times and error rates
-
-## Performance Optimization
-
-### 1. Caching
-- Redis for session storage
-- Database query caching
-- Static asset caching
-
-### 2. Database Optimization
-- Proper indexing
-- Query optimization
-- Connection pooling
-
-### 3. CDN Setup
-- Serve static assets via CDN
-- Image optimization
-- Gzip compression
-
-## Backup Strategy
-
-### Database Backups
-\`\`\`bash
-# Daily automated backup
-pg_dump -h localhost -U xhunt_user xhunt_db > backup_$(date +%Y%m%d).sql
-\`\`\`
-
-### File Backups
-- User uploaded content
-- Application logs
-- Configuration files
-
-## Scaling Considerations
-
-### Horizontal Scaling
-- Load balancer configuration
-- Session store externalization
-- Database read replicas
-
-### Vertical Scaling
-- Resource monitoring
-- Performance bottleneck identification
-- Capacity planning
 
 ## Troubleshooting
 
 ### Common Issues
+1. **Build failures**: Check TypeScript errors with `npm run type-check`
+2. **Environment variables**: Ensure all required vars are set
+3. **Image optimization**: Verify image domains in next.config.mjs
+4. **API routes**: Check function timeout limits in vercel.json
 
-1. **Database Connection Errors:**
-   - Check DATABASE_URL format
-   - Verify network connectivity
-   - Check user permissions
-
-2. **Authentication Issues:**
-   - Verify OAuth credentials
-   - Check NEXTAUTH_URL configuration
-   - Ensure NEXTAUTH_SECRET is set
-
-3. **Payment Processing:**
-   - Verify Stripe keys
-   - Check webhook endpoints
-   - Monitor Stripe dashboard
-
-### Logs
-
-\`\`\`bash
-# View application logs
-docker-compose logs app
-
-# View database logs
-docker-compose logs postgres
-
-# Follow logs in real-time
-docker-compose logs -f
-\`\`\`
-
-## Maintenance
-
-### Regular Tasks
-- Update dependencies
-- Security patches
-- Database maintenance
-- Log rotation
-- Backup verification
-
-### Update Process
-1. Test in staging environment
-2. Create database backup
-3. Deploy new version
-4. Run migrations
-5. Verify functionality
-6. Monitor for issues
-
-## Support
-
-For deployment issues:
-1. Check application logs
-2. Verify environment configuration
-3. Test database connectivity
-4. Review security settings
-5. Monitor performance metrics
+### Support
+- Check GitHub issues: [Repository Issues](https://github.com/your-username/x-hunt/issues)
+- Documentation: [Next.js Docs](https://nextjs.org/docs)
+- Vercel Support: [Vercel Help](https://vercel.com/help)
