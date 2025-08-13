@@ -2,7 +2,6 @@
   "version": 2,
   "name": "x-hunt",
   "alias": ["x-hunt.vercel.app"],
-  "regions": ["iad1", "sfo1"],
   "build": {
     "env": {
       "NODE_ENV": "production"
