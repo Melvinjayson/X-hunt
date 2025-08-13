@@ -7,13 +7,13 @@
 #### 1.1 Environment Variables Setup
 Create `.env.production` with real production values:
 
-```bash
+\`\`\`bash
 # Copy template and edit with production values
 cp .env.example .env.production
-```
+\`\`\`
 
 **Critical Variables to Configure:**
-```bash
+\`\`\`bash
 # Database - Use production PostgreSQL
 DATABASE_URL="postgresql://prod_user:secure_password@prod-db-host:5432/xhunt_prod"
 
@@ -54,10 +54,10 @@ JWT_SECRET="$(openssl rand -base64 32)"
 # Application
 APP_URL="https://yourdomain.com"
 NODE_ENV="production"
-```
+\`\`\`
 
 #### 1.2 Database Setup
-```bash
+\`\`\`bash
 # Generate Prisma client
 npx prisma generate
 
@@ -66,7 +66,7 @@ npx prisma db push
 
 # Seed initial data (optional)
 npx prisma db seed
-```
+\`\`\`
 
 ### ✅ **Phase 2: Replace Mock Data with Real APIs**
 
@@ -95,13 +95,13 @@ The following files need to be updated to use real database queries instead of m
 ### ✅ **Phase 3: Security & Performance**
 
 #### 3.1 Security Hardening
-```bash
+\`\`\`bash
 # Install security packages
 npm install helmet cors express-rate-limit
-```
+\`\`\`
 
 Update `next.config.js`:
-```javascript
+\`\`\`javascript
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
@@ -130,23 +130,23 @@ const nextConfig = {
     },
   ],
 }
-```
+\`\`\`
 
 #### 3.2 Performance Optimization
-```bash
+\`\`\`bash
 # Install Redis for caching
 npm install redis ioredis
 
 # Install compression
 npm install compression
-```
+\`\`\`
 
 ### ✅ **Phase 4: Docker Production Deployment**
 
 #### 4.1 Production Docker Compose
 Update `docker-compose.yml` for production:
 
-```yaml
+\`\`\`yaml
 version: '3.8'
 
 services:
@@ -207,12 +207,12 @@ volumes:
 networks:
   xhunt-network:
     driver: bridge
-```
+\`\`\`
 
 #### 4.2 Nginx Configuration
 Create `nginx.conf`:
 
-```nginx
+\`\`\`nginx
 events {
     worker_connections 1024;
 }
@@ -248,12 +248,12 @@ http {
         }
     }
 }
-```
+\`\`\`
 
 ### ✅ **Phase 5: Deployment Commands**
 
 #### 5.1 Production Build & Deploy
-```bash
+\`\`\`bash
 # Build production image
 docker-compose -f docker-compose.yml build
 
@@ -265,10 +265,10 @@ docker-compose exec app npx prisma db push
 
 # Check health
 curl https://yourdomain.com/api/health
-```
+\`\`\`
 
 #### 5.2 Monitoring Setup
-```bash
+\`\`\`bash
 # View logs
 docker-compose logs -f app
 
@@ -277,7 +277,7 @@ docker stats
 
 # Health check
 watch -n 30 'curl -s https://yourdomain.com/api/health | jq .'
-```
+\`\`\`
 
 ### ✅ **Phase 6: Post-Deployment Verification**
 
@@ -325,7 +325,7 @@ watch -n 30 'curl -s https://yourdomain.com/api/health | jq .'
 
 ### 🆘 **Emergency Rollback Plan**
 
-```bash
+\`\`\`bash
 # Stop current deployment
 docker-compose down
 
@@ -334,7 +334,7 @@ docker-compose exec postgres pg_restore -d xhunt_prod /backup/latest.sql
 
 # Start previous version
 docker-compose up -d
-```
+\`\`\`
 
 ---
 

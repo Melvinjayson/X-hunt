@@ -77,41 +77,41 @@ Your X-Hunt application is now **production-ready** with a comprehensive deploym
 - External service accounts (Stripe, Google OAuth, etc.)
 
 ### 1. Configure Environment
-```bash
+\`\`\`bash
 # Copy and configure production environment
 cp .env.production.template .env.production
 
 # Edit .env.production with your production values
 nano .env.production
-```
+\`\`\`
 
 ### 2. Set Up SSL Certificates
-```bash
+\`\`\`bash
 # Create SSL directory
 mkdir -p nginx/ssl
 
 # Copy your SSL certificates
 cp /path/to/your/cert.pem nginx/ssl/
 cp /path/to/your/key.pem nginx/ssl/
-```
+\`\`\`
 
 ### 3. Deploy to Production
-```bash
+\`\`\`bash
 # Run automated deployment
 ./deploy-production.sh
 
 # Or manual deployment
 docker-compose -f docker-compose.prod.yml up -d --build
-```
+\`\`\`
 
 ### 4. Verify Deployment
-```bash
+\`\`\`bash
 # Check health
 curl https://yourdomain.com/api/health
 
 # Monitor logs
 docker-compose logs -f
-```
+\`\`\`
 
 ## 🔐 Security Features Implemented
 
@@ -150,7 +150,7 @@ docker-compose logs -f
 - Performance monitoring
 
 ### Useful Commands
-```bash
+\`\`\`bash
 # View application status
 docker-compose ps
 
@@ -165,7 +165,7 @@ docker-compose logs -f app
 
 # Scale application
 docker-compose up -d --scale app=3
-```
+\`\`\`
 
 ## 🌐 Access Points
 

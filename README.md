@@ -42,37 +42,37 @@ X-hunt is a next-generation, AI-native experience marketplace and engagement pla
 ### Installation
 
 1. Clone the repository
-```bash
+\`\`\`bash
 git clone https://github.com/yourusername/x-hunt.git
 cd x-hunt/xhunt
-```
+\`\`\`
 
 2. Install dependencies
-```bash
+\`\`\`bash
 npm install
-```
+\`\`\`
 
 3. Set up environment variables
-```bash
+\`\`\`bash
 cp .env.example .env.local
 # Edit .env.local with your configuration
-```
+\`\`\`
 
 4. Set up the database
-```bash
+\`\`\`bash
 # Generate Prisma client
 npx prisma generate
 
 # Push database schema
 npx prisma db push
-```
+\`\`\`
 
 5. Start the development server
-```bash
+\`\`\`bash
 npm run dev
 # or
 yarn dev
-```
+\`\`\`
 
 6. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application
 
@@ -115,31 +115,31 @@ The application now includes a complete backend with:
 Multiple deployment options are available:
 
 ### Docker Compose (Recommended)
-```bash
+\`\`\`bash
 # Start all services (app, database, redis)
 docker-compose up -d
-```
+\`\`\`
 
 ### Manual Deployment
-```bash
+\`\`\`bash
 # Build for production
 npm run build
 
 # Start production server
 npm start
-```
+\`\`\`
 
 ### Vercel
-```bash
+\`\`\`bash
 # Deploy to Vercel
 vercel --prod
-```
+\`\`\`
 
 For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
 
 ## Project Structure
 
-```
+\`\`\`
 /src
   /app - Next.js App Router pages
   /components - React components
@@ -158,7 +158,7 @@ For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
   /context - React context providers
   /services - API service functions
 /public - Static assets
-```
+\`\`\`
 
 ## Contributing
 

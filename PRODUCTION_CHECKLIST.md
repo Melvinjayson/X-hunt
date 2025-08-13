@@ -54,7 +54,7 @@
 
 ### Option 1: Automated Deployment (Recommended)
 
-```bash
+\`\`\`bash
 # 1. Ensure all prerequisites are met
 ./deploy-production.sh
 
@@ -63,11 +63,11 @@ docker-compose logs -f
 
 # 3. Verify health
 curl https://yourdomain.com/api/health
-```
+\`\`\`
 
 ### Option 2: Manual Deployment
 
-```bash
+\`\`\`bash
 # 1. Copy environment file
 cp .env.production .env
 
@@ -80,7 +80,7 @@ docker-compose exec app npx prisma db push
 # 4. Verify deployment
 docker-compose ps
 curl http://localhost/api/health
-```
+\`\`\`
 
 ## Post-Deployment Verification
 
@@ -146,7 +146,7 @@ curl http://localhost/api/health
 
 If issues occur during deployment:
 
-```bash
+\`\`\`bash
 # Quick rollback
 ./deploy-production.sh rollback
 
@@ -155,12 +155,12 @@ docker-compose down
 # Restore previous database backup
 # Restart with previous configuration
 docker-compose up -d
-```
+\`\`\`
 
 ## Useful Commands
 
 ### Container Management
-```bash
+\`\`\`bash
 # View running containers
 docker-compose ps
 
@@ -172,10 +172,10 @@ docker-compose restart [service_name]
 
 # Scale services
 docker-compose up -d --scale app=3
-```
+\`\`\`
 
 ### Database Operations
-```bash
+\`\`\`bash
 # Database shell
 docker-compose exec postgres psql -U $POSTGRES_USER $POSTGRES_DB
 
@@ -184,10 +184,10 @@ docker-compose exec postgres pg_dump -U $POSTGRES_USER $POSTGRES_DB > backup.sql
 
 # Restore backup
 docker-compose exec -T postgres psql -U $POSTGRES_USER $POSTGRES_DB < backup.sql
-```
+\`\`\`
 
 ### Monitoring
-```bash
+\`\`\`bash
 # System resources
 docker stats
 
@@ -196,7 +196,7 @@ curl http://localhost/api/metrics
 
 # Health check
 curl http://localhost/api/health
-```
+\`\`\`
 
 ## Troubleshooting
 

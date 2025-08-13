@@ -16,9 +16,9 @@ This guide covers deploying the X-hunt application to production environments.
 
 Copy `.env.example` to `.env` and configure:
 
-```bash
+\`\`\`bash
 cp .env.example .env
-```
+\`\`\`
 
 **Required Variables:**
 - `DATABASE_URL`: PostgreSQL connection string
@@ -29,7 +29,7 @@ cp .env.example .env
 
 ### 2. Database Setup
 
-```bash
+\`\`\`bash
 # Install dependencies
 npm install
 
@@ -41,52 +41,52 @@ npx prisma db push
 
 # Seed initial data (optional)
 npx prisma db seed
-```
+\`\`\`
 
 ## Deployment Options
 
 ### Option 1: Docker Compose (Recommended)
 
 1. **Configure environment:**
-   ```bash
+   \`\`\`bash
    # Create production environment file
    cp .env.example .env.production
    # Edit .env.production with production values
-   ```
+   \`\`\`
 
 2. **Build and start services:**
-   ```bash
+   \`\`\`bash
    docker-compose up -d
-   ```
+   \`\`\`
 
 3. **Run database migrations:**
-   ```bash
+   \`\`\`bash
    docker-compose exec app npx prisma db push
-   ```
+   \`\`\`
 
 ### Option 2: Manual Deployment
 
 1. **Build the application:**
-   ```bash
+   \`\`\`bash
    npm run build
-   ```
+   \`\`\`
 
 2. **Start the production server:**
-   ```bash
+   \`\`\`bash
    npm start
-   ```
+   \`\`\`
 
 ### Option 3: Vercel Deployment
 
 1. **Install Vercel CLI:**
-   ```bash
+   \`\`\`bash
    npm i -g vercel
-   ```
+   \`\`\`
 
 2. **Deploy:**
-   ```bash
+   \`\`\`bash
    vercel --prod
-   ```
+   \`\`\`
 
 3. **Configure environment variables in Vercel dashboard**
 
@@ -94,21 +94,21 @@ npx prisma db seed
 
 ### PostgreSQL Setup
 
-```sql
+\`\`\`sql
 -- Create database and user
 CREATE DATABASE xhunt_db;
 CREATE USER xhunt_user WITH PASSWORD 'secure_password';
 GRANT ALL PRIVILEGES ON DATABASE xhunt_db TO xhunt_user;
-```
+\`\`\`
 
 ### Connection Pooling (Recommended)
 
 For production, use connection pooling:
 
-```bash
+\`\`\`bash
 # Using PgBouncer
 DATABASE_URL="postgresql://xhunt_user:password@pgbouncer:5432/xhunt_db"
-```
+\`\`\`
 
 ## Security Considerations
 
@@ -131,9 +131,9 @@ DATABASE_URL="postgresql://xhunt_user:password@pgbouncer:5432/xhunt_db"
 ## Monitoring & Health Checks
 
 ### Health Check Endpoint
-```
+\`\`\`
 GET /api/health
-```
+\`\`\`
 
 Returns application health status including:
 - Database connectivity
@@ -172,10 +172,10 @@ Returns application health status including:
 ## Backup Strategy
 
 ### Database Backups
-```bash
+\`\`\`bash
 # Daily automated backup
 pg_dump -h localhost -U xhunt_user xhunt_db > backup_$(date +%Y%m%d).sql
-```
+\`\`\`
 
 ### File Backups
 - User uploaded content
@@ -215,7 +215,7 @@ pg_dump -h localhost -U xhunt_user xhunt_db > backup_$(date +%Y%m%d).sql
 
 ### Logs
 
-```bash
+\`\`\`bash
 # View application logs
 docker-compose logs app
 
@@ -224,7 +224,7 @@ docker-compose logs postgres
 
 # Follow logs in real-time
 docker-compose logs -f
-```
+\`\`\`
 
 ## Maintenance
 
