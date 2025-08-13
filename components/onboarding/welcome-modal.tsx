@@ -24,7 +24,7 @@ export function WelcomeModal() {
 
   return (
     <Dialog open={showWelcome} onOpenChange={setShowWelcome}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-background">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="text-2xl font-bold text-foreground">Welcome to X-hunt!</DialogTitle>
